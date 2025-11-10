@@ -1,5 +1,5 @@
 const { NotImplementedError } = require('../lib/errors');
-// const { ListNode } = require('../extensions/list-node.js');
+const { ListNode } = require('../extensions/list-node.js');
 
 /**
  * Implement the Queue with a given interface via linked list (use ListNode extension above).
@@ -19,13 +19,20 @@ class Queue {
   }
 
   getUnderlyingList() {
-    if (!this.isEmpty()) {
-      let obj = this.front;
-      return obj;
+    if (this.isEmpty()) return null;
+
+    function toPlain(node) {
+      if (!node) return null;
+      return {
+        value: node.value,
+        next: toPlain(node.next),
+      };
     }
+
+    return toPlain(this.front);
   }
   isEmpty() {
-    return !this.front; //front not null
+    return !this.front;
   }
   enqueue(value) {
     let node = new ListNode(value);
@@ -34,23 +41,21 @@ class Queue {
       this.front = node;
       this.back = node;
     } else {
-      this.back.next = node; //pushing next elem new node
-      this.back = node; //move back poiter to new node
+      this.back.next = node;
+      this.back = node;
     }
-    console.log(node);
   }
 
   dequeue() {
-    let objList = this.front;
+    if (this.isEmpty()) return undefined;
 
-    if (!this.isEmpty()) {
-      this.front = this.front.next;
-    }
-    //check past item and set to it's back null
+    const objList = this.front;
+    this.front = this.front.next;
+
     if (!this.front) {
-      this.back = null; //set back to null
+      this.back = null;
     }
-    this.getUnderlyingList(); //print
+
     return objList.value;
   }
 }
